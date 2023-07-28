@@ -39,7 +39,7 @@ def present_or_future_date(value):
 
 
 class Organization(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30,unique=True)
     email = models.EmailField()
     mobile_number = models.BigIntegerField(validators=[validate_mobile_number])
     stack = models.CharField(max_length=20)
