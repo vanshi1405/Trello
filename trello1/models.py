@@ -50,7 +50,7 @@ class Organization(models.Model):
 
 
 class Location(models.Model):
-    organization = models.ForeignKey(Organization, related_name="locations", on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, related_name="locations", on_delete=models.CASCADE,null=True)
     country = models.CharField(max_length=10)
     state = models.CharField(max_length=10)
     city = models.CharField(max_length=10)
