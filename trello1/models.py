@@ -38,15 +38,7 @@ def present_or_future_date(value):
     return value
 
 
-class Location(models.Model):
-    # organization = models.ForeignKey(Organization, related_name="locations", on_delete=models.CASCADE, null=True)
-    country = models.CharField(max_length=10)
-    state = models.CharField(max_length=10)
-    city = models.CharField(max_length=10)
-    address1 = models.CharField(max_length=30)
 
-    def __str__(self):
-        return self.address1
 
 
 class Organization(models.Model):
@@ -55,11 +47,19 @@ class Organization(models.Model):
     mobile_number = models.BigIntegerField(validators=[validate_mobile_number])
     stack = models.CharField(max_length=20)
     company_size = models.CharField(choices=company_size, max_length=10)
-    location = models.ForeignKey(Location, related_name="organizations", on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.name
 
+class Location(models.Model):
+    organization = models.ForeignKey(Organization, related_name="locations", on_delete=models.CASCADE, null=True)
+    country = models.CharField(max_length=10)
+    state = models.CharField(max_length=10)
+    city = models.CharField(max_length=10)
+    address1 = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.address1
 
 class Board(models.Model):
     name = models.CharField(max_length=30)
@@ -79,6 +79,8 @@ class Member(User):
     job_profile = models.CharField(choices=job_profile, max_length=30)
     image = models.ImageField(null=True)
     board = models.ManyToManyField(Board, related_name='members', blank=True)
+    # organization = models.ForeignKey(Organization, related_name="member", on_delete=models.CASCADE)
+
 
     def __str__(self):
         return self.first_name
