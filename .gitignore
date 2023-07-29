@@ -140,3 +140,4 @@ cython_debug/
 
 Trello/config.ini
 .idea/
+Trello/uploads
