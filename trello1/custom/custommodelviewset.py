@@ -9,7 +9,7 @@ class CustomBoardModelViewset(viewsets.ModelViewSet):
         if self.action == 'list':
             user = self.request.user
             try:
-                member_object = Member.objects.get(id=user.id)
+                member_object = Profile.objects.get(id=user.id)
             except NotFound:
                 raise "user is not valid"
             queryset = member_object.board.all()
@@ -19,7 +19,7 @@ class CustomBoardModelViewset(viewsets.ModelViewSet):
             user = self.request.user
             pk = self.kwargs['pk']
             try:
-                member_object = Member.objects.get(id=user.id)
+                member_object = Profile.objects.get(id=user.id)
             except NotFound:
                 raise "user is not valid"
             try:
