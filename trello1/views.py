@@ -40,15 +40,3 @@ class CardViewset(CustomCardModelViewset):
     pagination_class = CustomPagination
 
 
-# string = "aaaabbbacceeee"
-#
-# def count_letter(s):
-#     m = {}
-#     for i in s:
-#         if m.get(i):
-#             m[i] += 1
-#         else:
-#             m[i] = 1
-#     return m
-#
-# print(count_letter(string))
