@@ -9,6 +9,8 @@ class ChecklistSerializer(serializers.ModelSerializer):
 
 
 class LocationSerializer(serializers.ModelSerializer):
+    organization = serializers.ReadOnlyField(source='location.organization_id')
+
     class Meta:
         model = Location
         fields = "__all__"
@@ -45,6 +47,27 @@ class OrganizationSerializer(serializers.ModelSerializer):
         Location.objects.bulk_create(location_list)
         org.save()
         return org
+
+    def update(self, instance, validated_data):
+        locations = validated_data.pop("locations")
+        instance.name = validated_data.pop("name")
+        instance.email = validated_data.pop("email")
+        instance.mobile_number = validated_data.pop("mobile_number")
+        instance.company_size_min_value = validated_data.pop("company_size_min_value")
+        instance.company_size_max_value = validated_data.pop("company_size_max_value")
+        location_list = []
+        instance.locations.all().delete()
+        for location in locations:
+            location_list.append(Location(organization=instance,
+                                          country=location.get("country"),
+                                          state=location.get("state"),
+                                          city=location.get("city"),
+                                          address1=location.get("address1")
+                                          ))
+        Location.objects.bulk_create(location_list)
+        instance.save()
+        return instance
+
 
 
 class BoardSerializer(serializers.ModelSerializer):
