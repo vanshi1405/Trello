@@ -6,6 +6,7 @@ from .views import *
 router= DefaultRouter()
 router.register("org",viewset=OrganizationViewset)
 router.register("board",viewset=BoardViewset)
+router.register("location",viewset=LocationViewset)
 
 urlpatterns = [
     path('', include(router.urls)),

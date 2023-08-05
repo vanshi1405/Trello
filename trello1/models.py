@@ -21,7 +21,7 @@ company_size = [
 
 job_profile = [
     ("Frontend developer", "Frontend developer"),
-    ("Backtend developer", "FBackend developer"),
+    ("Backtend developer", "Backend developer"),
     ("Support Engineer", "Support Engineer"), ]
 
 
@@ -82,7 +82,7 @@ class Profile(models.Model):
     organization = models.ForeignKey(Organization, related_name="member", on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.first_name
+        return self.user.username
 
 
 class Card(models.Model):
