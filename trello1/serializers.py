@@ -1,3 +1,4 @@
+import trello1.views
 from .models import *
 from rest_framework import serializers
 
@@ -9,11 +10,35 @@ class ChecklistSerializer(serializers.ModelSerializer):
 
 
 class LocationSerializer(serializers.ModelSerializer):
-    organization = serializers.ReadOnlyField(source='location.organization_id')
-
     class Meta:
         model = Location
         fields = "__all__"
+        extra_kwargs = {
+            'organization': {'required': True},
+        }
+
+    def get_fields(self):
+        fields = super().get_fields()
+        if isinstance(self.context['view'], trello1.views.OrganizationViewset):
+            fields['organization'].read_only = True
+        return fields
+
+    def validate(self, attrs):
+        if 'organization' not in attrs and isinstance(self.context['view'], trello1.views.LocationViewset):
+            raise serializers.ValidationError("location must have 'organization' attribute")
+        return attrs
+
+    def create(self, validated_data):
+        return Location.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.organization = validated_data.get('organization')
+        instance.country = validated_data.pop('country')
+        instance.state = validated_data.pop('state')
+        instance.city = validated_data.pop('city')
+        instance.address1 = validated_data.pop('address1')
+        instance.save()
+        return instance
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
@@ -33,6 +58,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
+
         locations = validated_data.pop("locations")
         org = Organization.objects.create(**validated_data)
 
@@ -69,7 +95,6 @@ class OrganizationSerializer(serializers.ModelSerializer):
         return instance
 
 
-
 class BoardSerializer(serializers.ModelSerializer):
     organization = OrganizationSerializer(read_only=True)
 
@@ -78,9 +103,18 @@ class BoardSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def to_representation(self, instance):
-        # Get the original representation of the Board model
         data = super(BoardSerializer, self).to_representation(instance)
-        # Remove the 'location' field from the representation
+        data.pop('location', None)
+        return data
+
+
+class CustomBoardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Board
+        fields = "__all__"
+
+    def to_representation(self, instance):
+        data = super(CustomBoardSerializer, self).to_representation(instance)
         data.pop('location', None)
         return data
 
