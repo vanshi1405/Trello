@@ -7,6 +7,7 @@ router= DefaultRouter()
 router.register("org",viewset=OrganizationViewset)
 router.register("board",viewset=BoardViewset)
 router.register("location",viewset=LocationViewset)
+router.register("profile",viewset=ProfileViewset)
 
 urlpatterns = [
     path('', include(router.urls)),

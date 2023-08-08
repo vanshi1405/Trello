@@ -65,6 +65,7 @@ class Board(models.Model):
     description = models.CharField(max_length=100)
     organization = models.ForeignKey(Organization, related_name="boards", on_delete=models.PROTECT)
 
+
     def __str__(self):
         return self.name
 
@@ -77,7 +78,7 @@ class Profile(models.Model):
     mobile_number = models.BigIntegerField(validators=[validate_mobile_number])
     dob = models.DateField()
     job_profile = models.CharField(choices=job_profile, max_length=30)
-    image = models.ImageField(null=True)
+    image = models.ImageField(null=True,blank=True)
     board = models.ManyToManyField(Board, related_name='members', blank=True)
     organization = models.ForeignKey(Organization, related_name="member", on_delete=models.CASCADE)
 

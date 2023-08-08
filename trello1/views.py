@@ -10,9 +10,8 @@ from rest_framework import status
 from .serializers import *
 from .models import *
 from rest_framework.response import Response
-from rest_framework.permissions import BasePermission,IsAuthenticatedOrReadOnly
+from rest_framework.permissions import BasePermission, IsAuthenticatedOrReadOnly
 from rest_framework.request import Request
-from rest_framework.viewsets import ModelViewSet
 
 
 class LocationViewset(CustomLocationModelViewset):
@@ -32,7 +31,6 @@ class LocationViewset(CustomLocationModelViewset):
 
         # For other actions like 'list' and 'retrieve', allow read permissions
         return [permissions.IsAuthenticated()]
-
 
 
 class OrganizationViewset(viewsets.ModelViewSet):
@@ -64,8 +62,31 @@ class BoardViewset(CustomBoardModelViewset):
             return Response(data="instance deleted")
 
 
-
 class CardViewset(CustomCardModelViewset):
     queryset = Board.objects.all()
     serializer_class = CardSerializer
     pagination_class = CustomPagination
+
+
+class ProfileViewset(viewsets.ModelViewSet):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    pagination_class = CustomPagination
+
+    # def list(self, request, *args, **kwargs):
+    #     return Response(data="method not allowed")
+
+    def destroy(self, request, *args, **kwargs):
+        return Response(data="method not allowed")
+
+    # def get_queryset(self):
+    #     if self.action == 'retrieve':
+    #         user = self.request.user
+    #         pk = self.kwargs['pk']
+    #         try:
+    #             member_object = Profile.objects.get(user_id=user.id)
+    #             queryset = member_object
+    #             return queryset
+    #         except NotFound:
+    #             raise "user is not valid"
+    #     return super().get_queryset()
