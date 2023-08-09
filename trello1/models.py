@@ -77,7 +77,7 @@ class Profile(models.Model):
     mobile_number = models.BigIntegerField(validators=[validate_mobile_number])
     dob = models.DateField()
     job_profile = models.CharField(choices=job_profile, max_length=30)
-    image = models.ImageField(null=True)
+    image = models.ImageField(null=True, blank=True)
     board = models.ManyToManyField(Board, related_name='members', blank=True)
     organization = models.ForeignKey(Organization, related_name="member", on_delete=models.CASCADE)
 
@@ -90,9 +90,9 @@ class Card(models.Model):
     board = models.ForeignKey(Board, related_name='cards_on_board', on_delete=models.CASCADE)
     name = models.CharField(max_length=30)
     description = models.TextField(max_length=500)
-    start_date = models.DateField(validators=[present_or_future_date], null=True)
-    due_date = models.DateField(validators=[present_or_future_date], null=True)
-    status = models.CharField(choices=status, max_length=10)
+    start_date = models.DateField(validators=[present_or_future_date], null=True, blank=True)
+    due_date = models.DateField(validators=[present_or_future_date], null=True, blank=True)
+    status = models.CharField(choices=status, max_length=10 ,default="ToDo")
     priority = models.CharField(choices=priority, max_length=10)
     lable = models.CharField(max_length=10)
 
@@ -110,7 +110,7 @@ class Lable(models.Model):
 
 
 class Checklist(models.Model):
-    card = models.ForeignKey(Card, related_name='checklist', on_delete=models.CASCADE)
+    card = models.ForeignKey(Card, related_name='checklist', on_delete=models.PROTECT, null=True)
     name = models.CharField(max_length=30)
     is_checked = models.BooleanField(default=False)
 

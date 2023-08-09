@@ -8,6 +8,12 @@ class ChecklistSerializer(serializers.ModelSerializer):
         model = Checklist
         fields = "__all__"
 
+    def get_fields(self):
+        fields = super().get_fields()
+        if isinstance(self.context['view'], trello1.views.CardViewset):
+            fields['card'].read_only = True
+        return fields
+
 
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -95,6 +101,14 @@ class OrganizationSerializer(serializers.ModelSerializer):
         return instance
 
 
+# class CustomOrganizationSerializer(OrganizationSerializer):
+#     locations = LocationSerializer(many=True)
+#
+#     class Meta:
+#         model = Organization
+#         fields = "__all__"
+
+
 class BoardSerializer(serializers.ModelSerializer):
     organization = OrganizationSerializer(read_only=True)
 
@@ -108,20 +122,90 @@ class BoardSerializer(serializers.ModelSerializer):
         return data
 
 
-class CustomBoardSerializer(serializers.ModelSerializer):
+class CustomBoardSerializer(BoardSerializer):
     class Meta:
         model = Board
         fields = "__all__"
+        # extra_kwargs = {'name': {'read_only': True},
+        #                 'description': {'read_only': True},
+        #                 'id': {'required': True}, }
 
     def to_representation(self, instance):
         data = super(CustomBoardSerializer, self).to_representation(instance)
-        data.pop('location', None)
+        data.pop('organization', None)
         return data
 
 
 class CardSerializer(serializers.ModelSerializer):
-    checklists = ChecklistSerializer(many=True)
+    checklist = ChecklistSerializer(many=True,required=False)
 
     class Meta:
         model = Card
         fields = "__all__"
+
+    def create(self, validated_data):
+        checklists = validated_data.pop("checklist")
+        instance = Card.objects.create(**validated_data)
+        check_list = []
+        for checklist in checklists:
+            check_list.append(Checklist(card=instance,
+                                        name=checklist.get("name"),
+                                        is_checked=checklist.get("is_checked",False)))
+        Checklist.objects.bulk_create(objs=check_list)
+        return instance
+
+    def update(self, instance, validated_data):
+        pass
+
+class ProfileSerializer(serializers.ModelSerializer):
+    # organization = OrganizationSerializer()
+    # board = CustomBoardSerializer(many=True)
+    board = serializers.ListField(child=serializers.IntegerField(), write_only=True)
+
+    class Meta:
+        model = Profile
+        fields = "__all__"
+
+    def to_representation(self, instance):
+        data = super(ProfileSerializer, self).to_representation(instance)
+        return data
+
+    def create(self, validated_data):
+        """
+        we want to made create method like user can add multiple board
+        """
+        board_list = validated_data.pop('board')
+        organization = validated_data.get('organization')
+        boards = organization.boards.all()
+        if len(boards) != 0:
+            c = 0
+            for b in board_list:
+                for i in boards:
+                    if b == i.id:
+                        c += 1
+            if c == 0:
+                raise serializers.ValidationError(detail="wrong board select")
+        instance = Profile.objects.create(**validated_data)
+        list_of_boards = organization.boards.filter(id__in=board_list)
+        instance.board.set(list_of_boards)
+        return instance
+
+    def update(self, instance, validated_data):
+        """
+              we want to made update method like user can add multiple board
+         """
+
+        board_list = validated_data.pop('board')
+        organization = validated_data.get('organization')
+        boards = organization.boards.all()
+        if len(boards) != 0:
+            c = 0
+            for b in board_list:
+                for i in boards:
+                    if b == i.id:
+                        c += 1
+            if c == 0:
+                raise serializers.ValidationError(detail="wrong board select")
+        list_of_boards = organization.boards.filter(id__in=board_list)
+        instance.board.set(list_of_boards)
+        return instance
