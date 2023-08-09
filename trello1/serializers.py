@@ -8,6 +8,12 @@ class ChecklistSerializer(serializers.ModelSerializer):
         model = Checklist
         fields = "__all__"
 
+    def get_fields(self):
+        fields = super().get_fields()
+        if isinstance(self.context['view'], trello1.views.CardViewset):
+            fields['card'].read_only = True
+        return fields
+
 
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -137,6 +143,19 @@ class CardSerializer(serializers.ModelSerializer):
         model = Card
         fields = "__all__"
 
+    def create(self, validated_data):
+        checklists = validated_data.pop("checklist")
+        instance = Card.objects.create(**validated_data)
+        check_list = []
+        for checklist in checklists:
+            check_list.append(Checklist(card=instance,
+                                        name=checklist.get("name"),
+                                        is_checked=checklist.get("is_checked",False)))
+        Checklist.objects.bulk_create(objs=check_list)
+        return instance
+
+    def update(self, instance, validated_data):
+        pass
 
 class ProfileSerializer(serializers.ModelSerializer):
     # organization = OrganizationSerializer()

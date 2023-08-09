@@ -63,7 +63,7 @@ class BoardViewset(CustomBoardModelViewset):
 
 
 class CardViewset(CustomCardModelViewset):
-    queryset = Board.objects.all()
+    queryset = Card.objects.all()
     serializer_class = CardSerializer
     pagination_class = CustomPagination
 

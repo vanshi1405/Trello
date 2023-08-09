@@ -64,4 +64,10 @@ class CustomCardModelViewset(viewsets.ModelViewSet):
             board_obj = Board.objects.get(id=int(board))
             queryset = board_obj.cards_on_board.all()
             return queryset
+        if self.action == 'retrieve':
+            pk = self.kwargs['pk']
+            board = self.request.query_params.get('board', None)
+            board_obj = Board.objects.get(id=int(board))
+            queryset = board_obj.cards_on_board.filter(id=pk)
+            return queryset
         return super().get_queryset()

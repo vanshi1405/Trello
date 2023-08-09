@@ -92,7 +92,7 @@ class Card(models.Model):
     description = models.TextField(max_length=500)
     start_date = models.DateField(validators=[present_or_future_date], null=True, blank=True)
     due_date = models.DateField(validators=[present_or_future_date], null=True, blank=True)
-    status = models.CharField(choices=status, max_length=10)
+    status = models.CharField(choices=status, max_length=10 ,default="ToDo")
     priority = models.CharField(choices=priority, max_length=10)
     lable = models.CharField(max_length=10)
 
