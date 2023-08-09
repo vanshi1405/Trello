@@ -8,6 +8,7 @@ router.register("org",viewset=OrganizationViewset)
 router.register("board",viewset=BoardViewset)
 router.register("location",viewset=LocationViewset)
 router.register("profile",viewset=ProfileViewset)
+router.register("card",viewset=CardViewset)
 
 urlpatterns = [
     path('', include(router.urls)),

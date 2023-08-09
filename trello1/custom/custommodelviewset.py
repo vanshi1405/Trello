@@ -60,8 +60,8 @@ class CustomBoardModelViewset(viewsets.ModelViewSet):
 class CustomCardModelViewset(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.action == 'list':
-            user = self.request.user
-            board = self.kwargs['board']
-            board_obj = Board.objects.get(name=board)
+            board = self.request.query_params.get('board', None)
+            board_obj = Board.objects.get(id=int(board))
             queryset = board_obj.cards_on_board.all()
             return queryset
+        return super().get_queryset()

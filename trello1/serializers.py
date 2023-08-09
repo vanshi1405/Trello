@@ -120,9 +120,9 @@ class CustomBoardSerializer(BoardSerializer):
     class Meta:
         model = Board
         fields = "__all__"
-        extra_kwargs = {'name': {'read_only': True},
-                        'description': {'read_only': True},
-                        'id': {'required': True}, }
+        # extra_kwargs = {'name': {'read_only': True},
+        #                 'description': {'read_only': True},
+        #                 'id': {'required': True}, }
 
     def to_representation(self, instance):
         data = super(CustomBoardSerializer, self).to_representation(instance)
@@ -131,7 +131,7 @@ class CustomBoardSerializer(BoardSerializer):
 
 
 class CardSerializer(serializers.ModelSerializer):
-    checklists = ChecklistSerializer(many=True)
+    checklist = ChecklistSerializer(many=True,required=False)
 
     class Meta:
         model = Card
