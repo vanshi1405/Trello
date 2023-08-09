@@ -14,14 +14,10 @@ status = [
     ("ToDo", "ToDo"),
     ("Done", "Done"),
     ("Doing", "Doing"), ]
-company_size = [
-    ("1-50", "1-50"),
-    ("50-100", "50-100"),
-    ("100+", "100+"), ]
 
 job_profile = [
     ("Frontend developer", "Frontend developer"),
-    ("Backtend developer", "Backend developer"),
+    ("Backend developer", "Backend developer"),
     ("Support Engineer", "Support Engineer"), ]
 
 
