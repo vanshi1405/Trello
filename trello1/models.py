@@ -110,7 +110,7 @@ class Lable(models.Model):
 
 
 class Checklist(models.Model):
-    card = models.ForeignKey(Card, related_name='checklist', on_delete=models.CASCADE, null=True)
+    card = models.ForeignKey(Card, related_name='checklist', on_delete=models.PROTECT, null=True)
     name = models.CharField(max_length=30)
     is_checked = models.BooleanField(default=False)
 
