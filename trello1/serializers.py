@@ -117,13 +117,12 @@ class BoardSerializer(serializers.ModelSerializer):
 
 
 class CustomBoardSerializer(BoardSerializer):
-
     class Meta:
         model = Board
         fields = "__all__"
-        extra_kwargs = { 'name': {'read_only': True},
-                         'description': {'read_only': True},
-                         'id': {'required': True},}
+        extra_kwargs = {'name': {'read_only': True},
+                        'description': {'read_only': True},
+                        'id': {'required': True}, }
 
     def to_representation(self, instance):
         data = super(CustomBoardSerializer, self).to_representation(instance)
@@ -141,8 +140,9 @@ class CardSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     # organization = OrganizationSerializer()
-    # board1 = CustomBoardSerializer(many=True,write_only=True)
+    # board = CustomBoardSerializer(many=True)
     board = serializers.ListField(child=serializers.IntegerField(), write_only=True)
+
     class Meta:
         model = Profile
         fields = "__all__"
@@ -158,23 +158,35 @@ class ProfileSerializer(serializers.ModelSerializer):
         board_list = validated_data.pop('board')
         organization = validated_data.get('organization')
         boards = organization.boards.all()
-        if len(boards)!=0:
-            c=0
+        if len(boards) != 0:
+            c = 0
             for b in board_list:
                 for i in boards:
                     if b == i.id:
-                        c+=1
-            if c==0:
+                        c += 1
+            if c == 0:
                 raise serializers.ValidationError(detail="wrong board select")
         instance = Profile.objects.create(**validated_data)
         list_of_boards = organization.boards.filter(id__in=board_list)
         instance.board.set(list_of_boards)
-        return  instance
-
+        return instance
 
     def update(self, instance, validated_data):
         """
-              we want to made create method like user can add multiple board
+              we want to made update method like user can add multiple board
          """
 
         board_list = validated_data.pop('board')
+        organization = validated_data.get('organization')
+        boards = organization.boards.all()
+        if len(boards) != 0:
+            c = 0
+            for b in board_list:
+                for i in boards:
+                    if b == i.id:
+                        c += 1
+            if c == 0:
+                raise serializers.ValidationError(detail="wrong board select")
+        list_of_boards = organization.boards.filter(id__in=board_list)
+        instance.board.set(list_of_boards)
+        return instance
