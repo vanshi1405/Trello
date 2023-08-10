@@ -14,14 +14,14 @@ status = [
     ("ToDo", "ToDo"),
     ("Done", "Done"),
     ("Doing", "Doing"), ]
-company_size = [
-    ("1-50", "1-50"),
-    ("50-100", "50-100"),
-    ("100+", "100+"), ]
+
+user_type = [
+    ("organization_admin", "organization_admin"),
+    ("organization_user", "organization_user"), ]
 
 job_profile = [
     ("Frontend developer", "Frontend developer"),
-    ("Backtend developer", "Backend developer"),
+    ("Backend developer", "Backend developer"),
     ("Support Engineer", "Support Engineer"), ]
 
 
@@ -80,6 +80,7 @@ class Profile(models.Model):
     image = models.ImageField(null=True, blank=True)
     board = models.ManyToManyField(Board, related_name='members', blank=True)
     organization = models.ForeignKey(Organization, related_name="member", on_delete=models.CASCADE)
+    user_type = models.CharField(choices=user_type, max_length=30,default="organization_user")
 
     def __str__(self):
         return self.user.username

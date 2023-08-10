@@ -3,13 +3,39 @@ from rest_framework.request import Request
 from trello1.models import *
 from rest_framework.exceptions import NotFound
 
+class CustomOrganizationViewset(viewsets.ModelViewSet):
+    def get_queryset(self):
+        if self.action == 'list':
+            user = self.request.user
+            try:
+                member_object = Profile.objects.get(user_id=user.id)
+            except NotFound:
+                raise "user is not valid"
+            if member_object.user_type == "organization_admin":
+                queryset = Organization.objects.all()
+                return queryset
+            else:
+                queryset = member_object.organization
+                return [queryset]
+
+        if self.action == 'retrive':
+            user = self.request.user
+            pk = self.kwargs['pk']
+            try:
+                member_object = Profile.objects.get(user_id=user.id)
+            except NotFound:
+                raise "user is not valid"
+            if member_object.user_type == "organization_admin":
+                queryset = Profile.objects.get(id=int(pk))
+                return queryset
+        return super().get_queryset()
 
 class CustomLocationModelViewset(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.action == 'list':
             user = self.request.user
             try:
-                member_object = Profile.objects.get(id=user.id)
+                member_object = Profile.objects.get(user_id=user.id)
             except NotFound:
                 raise "user is not valid"
             organization = member_object.organization
@@ -17,14 +43,14 @@ class CustomLocationModelViewset(viewsets.ModelViewSet):
             return queryset
         if self.action == 'retrieve':
             user = self.request.user
-            pk = self.kwargs['address1']
+            pk = self.kwargs['pk']
             try:
-                member_object = Profile.objects.get(id=user.id)
+                member_object = Profile.objects.get(user_id=user.id)
             except NotFound:
                 raise "user is not valid"
             try:
                 organization = member_object.organization
-                self.queryset = organization.locations.get(address1=pk)
+                self.queryset = organization.locations.get(id=int(pk))
             except:
                 self.queryset = None
             return self.queryset
