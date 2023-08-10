@@ -20,18 +20,18 @@ class LocationViewset(CustomLocationModelViewset):
     serializer_class = LocationSerializer
     # lookup_field = 'address1'
     pagination_class = CustomPagination
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly,custompermissions.CustomLocationPermissions]
 
-    def get_permissions(self):
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            # Check if the user is a superuser, if yes, grant edit permissions
-            if self.request.user.is_superuser:
-                return [permissions.IsAuthenticated()]
-            else:
-                return [permissions.IsAuthenticated(), custompermissions.CustomOrganizationPermissions()]
-
-        # For other actions like 'list' and 'retrieve', allow read permissions
-        return [permissions.IsAuthenticated()]
+    # def get_permissions(self):
+    #     if self.action in ['create', 'update', 'partial_update', 'destroy']:
+    #         # Check if the user is a superuser, if yes, grant edit permissions
+    #         if self.request.user.is_superuser:
+    #             return [permissions.IsAuthenticated()]
+    #         else:
+    #             return [permissions.IsAuthenticated(), custompermissions.CustomOrganizationPermissions()]
+    #
+    #     # For other actions like 'list' and 'retrieve', allow read permissions
+    #     return [permissions.IsAuthenticated()]
 
 
 class OrganizationViewset(CustomOrganizationViewset):
