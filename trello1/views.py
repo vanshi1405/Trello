@@ -12,12 +12,13 @@ from .models import *
 from rest_framework.response import Response
 from rest_framework.permissions import BasePermission, IsAuthenticatedOrReadOnly
 from rest_framework.request import Request
+from .custom import custompermissions
 
 
 class LocationViewset(CustomLocationModelViewset):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
-    lookup_field = 'address1'
+    # lookup_field = 'address1'
     pagination_class = CustomPagination
     permission_classes = [IsAuthenticatedOrReadOnly]
 
@@ -27,17 +28,20 @@ class LocationViewset(CustomLocationModelViewset):
             if self.request.user.is_superuser:
                 return [permissions.IsAuthenticated()]
             else:
-                return [permissions.IsAuthenticated(), permissions.ReadOnly()]
+                return [permissions.IsAuthenticated(), custompermissions.CustomOrganizationPermissions()]
 
         # For other actions like 'list' and 'retrieve', allow read permissions
         return [permissions.IsAuthenticated()]
 
 
-class OrganizationViewset(viewsets.ModelViewSet):
+class OrganizationViewset(CustomOrganizationViewset):
     queryset = Organization.objects.all()
     serializer_class = OrganizationSerializer
-    pagination_class = CustomPagination
+    # pagination_class = CustomPagination
     basename = 'organization'
+    permission_classes = [custompermissions.CustomOrganizationPermissions]
+
+
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
