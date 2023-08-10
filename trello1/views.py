@@ -37,7 +37,7 @@ class LocationViewset(CustomLocationModelViewset):
 class OrganizationViewset(CustomOrganizationViewset):
     queryset = Organization.objects.all()
     serializer_class = OrganizationSerializer
-    # pagination_class = CustomPagination
+    pagination_class = CustomPagination
     basename = 'organization'
     permission_classes = [custompermissions.CustomOrganizationPermissions]
 
