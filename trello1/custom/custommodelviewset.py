@@ -1,12 +1,15 @@
 from rest_framework import viewsets
 from rest_framework.request import Request
+from rest_framework.response import Response
+
 from trello1.models import *
 from rest_framework.exceptions import NotFound
 
+
 class CustomOrganizationViewset(viewsets.ModelViewSet):
     def get_queryset(self):
+        user = self.request.user
         if self.action == 'list':
-            user = self.request.user
             try:
                 member_object = Profile.objects.get(user_id=user.id)
             except NotFound:
@@ -19,7 +22,6 @@ class CustomOrganizationViewset(viewsets.ModelViewSet):
                 return [queryset]
 
         if self.action == 'retrive':
-            user = self.request.user
             pk = self.kwargs['pk']
             try:
                 member_object = Profile.objects.get(user_id=user.id)
@@ -30,10 +32,11 @@ class CustomOrganizationViewset(viewsets.ModelViewSet):
                 return queryset
         return super().get_queryset()
 
+
 class CustomLocationModelViewset(viewsets.ModelViewSet):
     def get_queryset(self):
+        user = self.request.user
         if self.action == 'list':
-            user = self.request.user
             try:
                 member_object = Profile.objects.get(user_id=user.id)
             except NotFound:
@@ -42,7 +45,6 @@ class CustomLocationModelViewset(viewsets.ModelViewSet):
             queryset = organization.locations.all()
             return queryset
         if self.action == 'retrieve':
-            user = self.request.user
             pk = self.kwargs['pk']
             try:
                 member_object = Profile.objects.get(user_id=user.id)
@@ -59,8 +61,8 @@ class CustomLocationModelViewset(viewsets.ModelViewSet):
 
 class CustomBoardModelViewset(viewsets.ModelViewSet):
     def get_queryset(self):
+        user = self.request.user
         if self.action == 'list':
-            user = self.request.user
             try:
                 member_object = Profile.objects.get(user_id=user.id)
             except NotFound:
@@ -69,7 +71,6 @@ class CustomBoardModelViewset(viewsets.ModelViewSet):
             return queryset
 
         if self.action == 'retrieve':
-            user = self.request.user
             pk = self.kwargs['pk']
             try:
                 member_object = Profile.objects.get(user_id=user.id)
@@ -96,4 +97,36 @@ class CustomCardModelViewset(viewsets.ModelViewSet):
             board_obj = Board.objects.get(id=int(board))
             queryset = board_obj.cards_on_board.filter(id=pk)
             return queryset
+        return super().get_queryset()
+
+
+class CustomdeleteModelViewset(viewsets.ModelViewSet):
+
+    def destroy(self, request, *args, **kwargs):
+        return Response(data="method not allowed")
+
+
+class CustomProfileModelViewset(viewsets.ModelViewSet):
+    def get_queryset(self):
+        user = self.request.user
+        if self.action == "list":
+            try:
+                member_object = Profile.objects.get(user_id=user.id)
+            except NotFound:
+                raise "user is not valid"
+            if member_object.user_type == "organization_admin":
+                queryset = Profile.objects.all()
+                return queryset
+            else:
+                return [member_object]
+
+        if self.action == "retrive":
+            pk = self.kwargs['pk']
+            try:
+                member_object = Profile.objects.get(user_id=user.id)
+            except NotFound:
+                raise "user is not valid"
+            if member_object.user_type == "organization_admin":
+                queryset = Profile.objects.get(int(pk))
+                return queryset
         return super().get_queryset()
