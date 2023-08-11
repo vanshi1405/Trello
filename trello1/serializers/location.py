@@ -1,10 +1,9 @@
-from trello1.viewsets.organization import OrganizationViewset
-from trello1.viewsets.location import LocationViewset
+
 from trello1.models import *
 from rest_framework import serializers
 
 
-
+import trello1
 
 
 
@@ -18,12 +17,12 @@ class LocationSerializer(serializers.ModelSerializer):
 
     def get_fields(self):
         fields = super().get_fields()
-        if isinstance(self.context['view'], OrganizationViewset):
+        if isinstance(self.context['view'], trello1.viewsets.organization.OrganizationViewset):
             fields['organization'].read_only = True
         return fields
 
     def validate(self, attrs):
-        if 'organization' not in attrs and isinstance(self.context['view'], LocationViewset):
+        if 'organization' not in attrs and isinstance(self.context['view'], trello1.viewsets.location.LocationViewset):
             raise serializers.ValidationError("location must have 'organization' attribute")
         return attrs
 

@@ -2,11 +2,11 @@ import trello1
 from trello1.models import *
 from rest_framework import serializers
 
-
 from trello1.serializers import location
-class OrganizationSerializer(serializers.ModelSerializer):
-    locations =location.LocationSerializer(many=True)
 
+
+class OrganizationSerializer(serializers.ModelSerializer):
+    locations = location.LocationSerializer(many=True)
 
     class Meta:
         model = Organization

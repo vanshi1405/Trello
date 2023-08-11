@@ -3,8 +3,6 @@ from trello1.models import *
 from rest_framework import serializers
 
 
-
-
 class BoardSerializer(serializers.ModelSerializer):
     organization = trello1.serializers.organization.OrganizationSerializer(read_only=True)
 

@@ -1,8 +1,5 @@
-
 from trello1.models import *
 from rest_framework import serializers
-
-
 
 
 class ProfileSerializer(serializers.ModelSerializer):
