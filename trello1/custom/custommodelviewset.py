@@ -104,3 +104,29 @@ class CustomdeleteModelViewset(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         return Response(data="method not allowed")
+
+
+class CustomProfileModelViewset(viewsets.ModelViewSet):
+    def get_queryset(self):
+        user = self.request.user
+        if self.action == "list":
+            try:
+                member_object = Profile.objects.get(user_id=user.id)
+            except NotFound:
+                raise "user is not valid"
+            if member_object.user_type == "organization_admin":
+                queryset = Profile.objects.all()
+                return queryset
+            else:
+                return [member_object]
+
+        if self.action == "retrive":
+            pk = self.kwargs['pk']
+            try:
+                member_object = Profile.objects.get(user_id=user.id)
+            except NotFound:
+                raise "user is not valid"
+            if member_object.user_type == "organization_admin":
+                queryset = Profile.objects.get(int(pk))
+                return queryset
+        return super().get_queryset()

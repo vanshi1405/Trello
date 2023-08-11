@@ -20,8 +20,9 @@ from trello1.serializers import board
 
 class BoardViewset(CustomBoardModelViewset):
     queryset = Board.objects.all()
-    serializer_class = board.BoardSerializer
+    serializer_class = board.CustomBoardSerializer
     pagination_class = CustomPagination
+    permission_classes = [custompermissions.CustomBoardPermissions]
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
