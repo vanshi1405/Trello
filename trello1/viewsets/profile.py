@@ -5,9 +5,6 @@ from trello1.custom.pagination import CustomPagination
 from trello1.models import *
 
 
-# from trello1.serializers.profile import ProfileSerializer
-
-
 class ProfileViewset(CustomdeleteModelViewset):
     queryset = Profile.objects.all()
     serializer_class = trello1.serializers.profile.ProfileSerializer
