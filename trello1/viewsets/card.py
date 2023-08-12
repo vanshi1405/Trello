@@ -14,9 +14,14 @@ from rest_framework.permissions import BasePermission, IsAuthenticatedOrReadOnly
 from rest_framework.request import Request
 from trello1.custom import custompermissions
 from trello1.serializers import card
+from rest_framework.decorators import action
+from trello1.task import *
 
 
 class CardViewset(CustomCardModelViewset):
     queryset = Card.objects.all()
     serializer_class =card.CardSerializer
     pagination_class = CustomPagination
+
+
+

@@ -121,6 +121,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
@@ -144,3 +146,19 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DEFAULT_FILE_STORAGE = 'trello1.custom.customstorage.CustomStorage'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.office365.com'  # Your SMTP server address
+
+EMAIL_PORT = 587  # Your SMTP server port (typically 587 for TLS)
+EMAIL_USE_TLS = True  # Use TLS for secure connection, set to False if your server does not support TLS
+EMAIL_HOST_USER = config.get('email', 'EMAIL_HOST_USER')  # Your SMTP server username or email address
+EMAIL_HOST_PASSWORD = config.get('email', 'EMAIL_HOST_PASSWORD')  # Your SMTP serve
+
+
+
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379'  # Example using Redis as the message broker
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'  # Example using Redis as the result backend
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'

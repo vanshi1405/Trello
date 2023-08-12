@@ -6,12 +6,12 @@ from trello1.custom.custompermissions import *
 from trello1.models import *
 
 
+
 class ProfileViewset(CustomdeleteModelViewset,CustomProfileModelViewset):
     queryset = Profile.objects.all()
     serializer_class = trello1.serializers.profile.ProfileSerializer
     pagination_class = CustomPagination
     permission_classes = [CustomProfilePermissions]
-
 
     # def get_queryset(self):
     #     if self.action == 'retrieve':
