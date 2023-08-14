@@ -154,7 +154,7 @@ CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'  # Example using Redis as the r
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TASK_ALWAYS_EAGER = True
+# CELERY_TASK_ALWAYS_EAGER = True
 CELERY_BEAT_SCHEDULE = {
     'send-reminder-emails': {
         'task': 'trello1.task.send_email',  # Update with the correct path to your task
