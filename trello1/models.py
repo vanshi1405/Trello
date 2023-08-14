@@ -95,7 +95,7 @@ class Card(models.Model):
     due_date = models.DateField(validators=[present_or_future_date], null=True, blank=True)
     status = models.CharField(choices=status, max_length=10 ,default="ToDo")
     priority = models.CharField(choices=priority, max_length=10)
-    lable = models.CharField(max_length=10)
+    lable = models.CharField(max_length=10,blank=True)
 
     def __str__(self):
         return self.name
