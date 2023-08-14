@@ -15,8 +15,8 @@ class CustomOrganizationViewset(viewsets.ModelViewSet):
             except NotFound:
                 raise "user is not valid"
             if member_object.user_type == "organization_admin":
-                queryset = Organization.objects.all()
-                return queryset
+                queryset = member_object.organization
+                return [queryset]
             else:
                 queryset = member_object.organization
                 return [queryset]
