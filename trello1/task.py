@@ -25,6 +25,6 @@ def send_email(subject,message,from_email,recipient_list):
     #         cards = board.cards_on_board.all()
     #         for card in cards:
     #             recipient_list.append(card.user.user.email)
-    rdb.set_trace()
-    # send_mail(subject, message, from_email, recipient_list)
+
+    send_mail(subject, message, from_email, recipient_list)
     print("start")
