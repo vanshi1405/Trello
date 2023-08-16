@@ -1,4 +1,5 @@
-from celery import shared_task
+from celery import shared_task,Celery
+# from celery.contrib import rdb
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 
@@ -24,6 +25,6 @@ def send_email(subject,message,from_email,recipient_list):
     #         cards = board.cards_on_board.all()
     #         for card in cards:
     #             recipient_list.append(card.user.user.email)
-
-    send_mail(subject, message, from_email, recipient_list)
+    rdb.set_trace()
+    # send_mail(subject, message, from_email, recipient_list)
     print("start")

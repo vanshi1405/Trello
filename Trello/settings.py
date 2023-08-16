@@ -155,6 +155,7 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 # CELERY_TASK_ALWAYS_EAGER = True
+CELERY_REMOTE_DEBUG = True
 CELERY_BEAT_SCHEDULE = {
     'send-reminder-emails': {
         'task': 'trello1.task.send_email',  # Update with the correct path to your task
