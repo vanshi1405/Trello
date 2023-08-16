@@ -149,15 +149,16 @@ EMAIL_USE_TLS = True  # Use TLS for secure connection, set to False if your serv
 EMAIL_HOST_USER = config.get('email', 'EMAIL_HOST_USER')  # Your SMTP server username or email address
 EMAIL_HOST_PASSWORD = config.get('email', 'EMAIL_HOST_PASSWORD')  # Your SMTP serve
 
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379'  # Example using Redis as the message broker
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'  # Example using Redis as the result backend
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'  # Example using Redis as the message broker
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'  # Example using Redis as the result backend
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 # CELERY_TASK_ALWAYS_EAGER = True
+CELERY_REMOTE_DEBUG = True
 CELERY_BEAT_SCHEDULE = {
     'send-reminder-emails': {
         'task': 'trello1.task.send_email',  # Update with the correct path to your task
-        'schedule': schedules.schedule(run_every=timedelta(seconds=60)),  # Every 60 second
+        'schedule': schedules.schedule(run_every=timedelta(weeks=2)),  # Every 60 second
     },
 }
